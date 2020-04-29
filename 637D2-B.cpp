@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #define MAX_LENGTH 200005
-#define SUBMISSION_VER 1
+// #define SUBMISSION_VER 1
 
 int main(int argc, char* argv[])
 {
@@ -9,16 +9,16 @@ int main(int argc, char* argv[])
         freopen("637D2B.in", "r", stdin);
         freopen("637D2B.out", "w", stdout);
     #endif
-    std::cout << "Testing?" << std::endl;
-    int t, n, k;
+    int t=0, n=0, k=0;
     std::cin >> t;
+    unsigned long h[MAX_LENGTH] = {0}; // heights
+    bool isPeak[MAX_LENGTH] = {0}; 
+    unsigned int p[MAX_LENGTH] = {0}; // peaks
+    unsigned int p_count[MAX_LENGTH] = {0};
     for (int i=0; i<t; i++)
     {
-        unsigned long h[MAX_LENGTH] = {0}; // heights
-        bool isPeak[MAX_LENGTH] = {false}; 
-        unsigned int p[MAX_LENGTH] = {0}; // peaks
-        unsigned int p_count[MAX_LENGTH] = {0};
         std::cin >> n >> k;
+        std::cout << n << k << std::endl;
         for (int j=0; j<n; j++)
             std::cin >> h[j];
         // Pick up peaks.
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
             }
         }
         
-        std::cout << max << " " << max_ind << std::endl;
+        std::cout << max << " " << max_ind << std::endl;      
     }
     return 0;
 }
