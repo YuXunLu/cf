@@ -1,25 +1,27 @@
 #include <iostream>
 #include <fstream>
 #define MAX_LENGTH 200005
-// #define SUBMISSION_VER 1
-
+unsigned long h[MAX_LENGTH] = { 0 }; // heights
+bool isPeak[MAX_LENGTH] = { 0 };
+unsigned int p[MAX_LENGTH] = { 0 }; // peaks
+unsigned int p_count[MAX_LENGTH] = { 0 };
 int main(int argc, char* argv[])
 {
+    #define SUBMISSION_VER 1
     #ifndef SUBMISSION_VER
-        freopen("637D2B.in", "r", stdin);
-        freopen("637D2B.out", "w", stdout);
+        freopen("C:\\Users\\Yuxun Lu\\Code\\cf\\637D2B.in", "r", stdin);
+        freopen("C:\\Users\\Yuxun Lu\\Code\\cf\\637D2B.out", "w", stdout);
     #endif
     int t=0, n=0, k=0;
     std::cin >> t;
-    std::cout << t << std::endl;
-    unsigned long h[MAX_LENGTH] = {0}; // heights
-    bool isPeak[MAX_LENGTH] = {0}; 
-    unsigned int p[MAX_LENGTH] = {0}; // peaks
-    unsigned int p_count[MAX_LENGTH] = {0};
     for (int i=0; i<t; i++)
     {
+        std::memset(h, 0, sizeof h);
+        std::memset(isPeak, 0, sizeof isPeak);
+        std::memset(p, 0, sizeof p);
+        std::memset(p_count, 0, sizeof p_count);
+
         std::cin >> n >> k;
-        std::cout << n << k << std::endl;
         for (int j=0; j<n; j++)
             std::cin >> h[j];
         // Pick up peaks.
@@ -31,31 +33,27 @@ int main(int argc, char* argv[])
                 isPeak[j]=false;
         }
         // Couting peaks.
-        for (int j=0; j<n; j=j++)
+
+        unsigned int max = 0;
+        unsigned int max_ind = 0;
+
+        for (unsigned int j=0; j<n; j++)
         {
             int p_end = j + k - 1;
             if (p_end > n)
-                p_end = n;
-            for (int ii=j; ii<p_end; ii++)
+                break;
+            for (int ii=j+1; ii<=p_end-1; ii++)
             {
                 if (isPeak[ii])
-                    p_count[j] = p_count[j+1];
+                    p_count[j] = p_count[j]+1;
             }
-        }
-        // Find maximum.
-        unsigned int max = 0;
-        unsigned int max_ind = 0;
-        for (int ind=0; ind<n; ind++)
-        {
-            if (p_count[ind] > max)
+            if ( p_count[j] > max )
             {
-                max = p_count[ind];
-                max_ind = ind;
+                max = p_count[j];
+                max_ind = j;
             }
-        }
-        
-        std::cout << max << " " << max_ind << std::endl;     
-        std::cout << "test" << std::endl; 
+        }        
+        std::cout << max + 1 << " " << max_ind + 1 << std::endl;     
     }
     return 0;
 }
