@@ -11,6 +11,7 @@ int main(int argc, char* argv[])
     #endif
     int t=0, n=0, k=0;
     std::cin >> t;
+    std::cout << t << std::endl;
     unsigned long h[MAX_LENGTH] = {0}; // heights
     bool isPeak[MAX_LENGTH] = {0}; 
     unsigned int p[MAX_LENGTH] = {0}; // peaks
@@ -53,7 +54,8 @@ int main(int argc, char* argv[])
             }
         }
         
-        std::cout << max << " " << max_ind << std::endl;      
+        std::cout << max << " " << max_ind << std::endl;     
+        std::cout << "test" << std::endl; 
     }
     return 0;
 }
