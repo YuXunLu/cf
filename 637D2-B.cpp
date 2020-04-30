@@ -37,17 +37,33 @@ int main(int argc, char* argv[])
         unsigned int max = 0;
         unsigned int max_ind = 0;
 
-        for (unsigned int j=0; j<n; j++)
+        // Initial state.
+        for (unsigned int j=1; j<=k-2; j++)
         {
-            int p_end = j + k - 1;
-            if (p_end > n)
-                break;
-            for (int ii=j+1; ii<=p_end-1; ii++)
+            if (isPeak[j])
+                p_count[0] = p_count[0] + 1;
+        }
+        max = p_count[0];
+        max_ind = 0;
+
+        // Update states.
+        for (unsigned int j=1; j<n; j++)
+        {
+            if (isPeak[j]) // j itself is a peak.
             {
-                if (isPeak[ii])
-                    p_count[j] = p_count[j]+1;
+                if (p_count[j - 1] > 0)
+                    p_count[j] = p_count[j - 1] - 1;
+                else
+                    p_count[j] = 0;
             }
-            if ( p_count[j] > max )
+            else
+            {
+                p_count[j] = p_count[j-1];
+            }
+            if (j+k-2 < n)
+                if (isPeak[j+k-2])
+                    p_count[j] = p_count[j] + 1;
+            if (p_count[j] > max)
             {
                 max = p_count[j];
                 max_ind = j;
