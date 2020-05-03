@@ -14,22 +14,30 @@ void solve(int n, int m)
 {
     int islands[MAX_M] = {0};
     int left_time[MAX_M] = {0};
-    // bool visit[MAX_M] = {0};
     std::array<int, MAX_M> min_time;
     std::array<int, MAX_M> direction;
     direction.fill(1);
-    min_time.fill(MAX_N);
-    std::vector<int> stack;
+    min_time.fill(1e9+5);
+    std::vector<std::pair<int, int>> stack;
     int g = 0, r = 0;
     for(int i=0;i<m;i++)
         cin >> islands[i];
     cin >> g >> r;
     // dfs 
+
+
+    /// This solution's problem is, last_visit will be overwrite!!!
+    // If, say, 
+    // vertex 0 -> vertex 3 -> vertex 6, 
+    // but vertex 0 -> vertex 6 is also ok from 0.
+    // then, last_visit will be overwrite from 0 to 3, if the stack is [3,0] -> first arrive 3.
+    /// for left_time's bug, consier
+    // c -> b -> a -> b 
+    // c-> b -> a -> d
     left_time[0] = g;
     min_time[0] = 0;
-    int current_idx = 0;
-    stack.push_back(0);
-    bool found = false;
+    stack.push_back(std::make_pair(0,0));
+    // cout << g << r;
     std::qsort(islands, m, sizeof islands[0], [](const void* a, const void* b)
     {
         int arg1 = *static_cast<const int*>(a);
@@ -38,71 +46,59 @@ void solve(int n, int m)
         if (arg1 > arg2) return 1;
         return 0;
     });
+    bool found = false;
     while(!stack.empty())
     {
-        if (found)
-            break;
-        current_idx = stack.back();
+        auto current_pair = stack.back();
         stack.pop_back();
-        // visit[current_idx] = true;
-        // search for next
+
+        int current_idx = current_pair.second;
+        int last_idx = current_pair.first;
+
+        if (current_idx != last_idx)
+        {
+            left_time[current_idx] = left_time[last_idx] - abs(islands[last_idx] - islands[current_idx]);
+            if (left_time[current_idx] == 0)
+            {
+                int t = min_time[last_idx] + abs(islands[last_idx] - islands[current_idx]) + r;
+                min_time[current_idx] = t < min_time[current_idx] ? t : min_time[current_idx];
+                left_time[current_idx] = g;
+            }
+            else //passby
+            {
+                int t =  min_time[last_idx] +  abs(islands[last_idx] - islands[current_idx]);
+                min_time[current_idx] = t < min_time[current_idx] ? t : min_time[current_idx];
+            }
+        }
+        
         for(int i=0; i<m; i++)
         {
             if (i==current_idx)
                 continue;
             int next = islands[i];
-            // direction
             int need_time = 0;
-            bool mod_dir = false;
-            if ((islands[current_idx] - next) > 0)
-            {
-                // go back & change direction
-                need_time = islands[current_idx] - next;
-                if (direction[current_idx] != -1)
-                {
-                    need_time += 1;
-                    mod_dir = true;
-                }
-            }
-            if ((islands[current_idx] - next) < 0)
-            {
-                need_time = abs(islands[current_idx] - next);
-                if (direction[current_idx] != 1)
-                {
-                    need_time += 1;
-                    mod_dir = true;
-                }
-            }
+            need_time = abs(islands[current_idx] - next);
+
             if ( need_time <= left_time[current_idx] )
             {
-                // if (!visit[i])
-                {
-                    stack.push_back(i);
-                    if (mod_dir)
-                        direction[i] = -direction[current_idx];
-                    left_time[i] = left_time[current_idx] - need_time;
-                    if (left_time[i] != 0) //pass by.
-                    {
-                        min_time[i] = min_time[current_idx] + need_time;
-                    }
-                    else //arrive at.
-                    {
-                        min_time[i] = min_time[current_idx] + r + need_time;
-                        left_time[i] = g;
-                    }
-                }
+                stack.push_back(std::make_pair(current_idx, i));
                 if (i==m-1)
                 {
-                    // arrived.
-                    cout << min_time[m-1] << endl;
+                    int t = min_time[current_idx] + abs(islands[current_idx] - islands[m-1]);
+                    min_time[m-1] = t < min_time[m-1] ? t : min_time[m-1];
                     found = true;
                     break;
                 }
             }
         }
+        if (found)
+            break;
+
     }
-    if (min_time[m-1] == MAX_N)
+    if (min_time[m-1] == 1e9+5)
         cout << -1 << endl;
+    else
+        cout << min_time[m-1] << endl;
 }
 int main(int argc, char* argv[])
 {
